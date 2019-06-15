@@ -1,7 +1,8 @@
 import React from 'react';
+import Layout from './hoc/Layout/Layout';
 
 const App = () => (
-  null
+  <Layout />
 );
 
 export default App;
