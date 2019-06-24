@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/gigwigs/static/css/main.91b2ef2d.chunk.css",
+    "main.js": "/gigwigs/static/js/main.4820f113.chunk.js",
+    "main.js.map": "/gigwigs/static/js/main.4820f113.chunk.js.map",
+    "runtime~main.js": "/gigwigs/static/js/runtime~main.086ea278.js",
+    "runtime~main.js.map": "/gigwigs/static/js/runtime~main.086ea278.js.map",
+    "static/css/2.c51b6406.chunk.css": "/gigwigs/static/css/2.c51b6406.chunk.css",
+    "static/js/2.e8e5155f.chunk.js": "/gigwigs/static/js/2.e8e5155f.chunk.js",
+    "static/js/2.e8e5155f.chunk.js.map": "/gigwigs/static/js/2.e8e5155f.chunk.js.map",
+    "index.html": "/gigwigs/index.html",
+    "precache-manifest.bcc4d7f7a091e3dc46d1004b12f1b5a4.js": "/gigwigs/precache-manifest.bcc4d7f7a091e3dc46d1004b12f1b5a4.js",
+    "service-worker.js": "/gigwigs/service-worker.js",
+    "static/css/2.c51b6406.chunk.css.map": "/gigwigs/static/css/2.c51b6406.chunk.css.map",
+    "static/css/main.91b2ef2d.chunk.css.map": "/gigwigs/static/css/main.91b2ef2d.chunk.css.map",
+    "static/media/gig-image.jpg": "/gigwigs/static/media/gig-image.be70d568.jpg"
+  }
+}
