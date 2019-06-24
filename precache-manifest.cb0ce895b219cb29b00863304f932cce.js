@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2f5bf96949244fcb93d8d00a638d9b7c",
+    "revision": "095acb5205d984cb5ad223b993f12785",
     "url": "/gigwigs/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/gigwigs/static/css/2.c51b6406.chunk.css"
   },
   {
-    "revision": "4ac6390823339ce6bc79",
+    "revision": "58e1714c76c828ebcc56",
     "url": "/gigwigs/static/css/main.91b2ef2d.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/gigwigs/static/js/2.e8e5155f.chunk.js"
   },
   {
-    "revision": "4ac6390823339ce6bc79",
-    "url": "/gigwigs/static/js/main.4820f113.chunk.js"
+    "revision": "58e1714c76c828ebcc56",
+    "url": "/gigwigs/static/js/main.2b4e9f4b.chunk.js"
   },
   {
     "revision": "9f3c84276226d81b893c",
