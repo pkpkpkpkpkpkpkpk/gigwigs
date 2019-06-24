@@ -16,8 +16,8 @@ const CreatePlaylistButton = props => {
 
   const scopes = ['playlist-modify-public'];
   const spotifyApi = new spotifyWebApi({
-    redirectUri: 'https://gigwigs.herokuapp.com/playlist',
-    clientId: '032012949aa244e0aedeb1f656c204b7'
+    redirectUri: 'https://pkpkpkpkpkpkpkpk.github.io/gigwigs/playlist',
+    clientId: 'e395299ea7a84cf2b3833d140e0fb40f'
   });
   const authUrl = spotifyApi.createAuthorizeURL(scopes);
 
