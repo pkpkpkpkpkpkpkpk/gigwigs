@@ -5,6 +5,7 @@ import Layout from './hoc/Layout/Layout';
 import PlaylistCreator from './containers/PlaylistCreator/PlaylistCreator';
 
 const App = () => (
+  // basename for BrowserRouter set for app to display the correct url when hosted on gh-pages
   <BrowserRouter basename={process.env.PUBLIC_URL}>
     <Switch>
       <Route path='/' exact component={Layout} />

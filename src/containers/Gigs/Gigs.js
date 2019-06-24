@@ -34,7 +34,7 @@ class Gigs extends Component {
 
   getGigs = () => {
     axios.post('https://gigwigs-server.herokuapp.com/getGigs', {
-      location: this.props.where,
+      where: this.props.where,
       selectedDate: `${new Date(this.props.selectedDate).getFullYear()}-${new Date(this.props.selectedDate).toLocaleDateString('en-US', { month: 'short' })}-${new Date(this.props.selectedDate).toLocaleDateString('en-US', { day: '2-digit' })}`
     })
       .then(res => {
