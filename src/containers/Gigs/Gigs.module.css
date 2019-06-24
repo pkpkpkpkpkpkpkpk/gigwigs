@@ -1,4 +1,22 @@
 .container {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-evenly;
+  min-height: calc(100vh - 80px);
+}
+
+.spinnerContainer {
+  height: calc(100vh - 80px);
+  display: flex;
+}
+
+.errorContainer {
+  height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.errorContainer div {
+  margin: auto 10px;
 }

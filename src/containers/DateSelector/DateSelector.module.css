@@ -1,0 +1,63 @@
+.container {
+  width: 100%;
+  height: 40px;
+  background-color: white;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.container:hover {
+  background-color: #eee;
+}
+
+.container h3 {
+  margin: 0;
+}
+
+.calendarContainer {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.1s linear;
+  display: flex;
+  justify-content: center;
+  background-color: white;
+}
+
+.showCalendar {
+  max-height: 330px;
+}
+
+.calendar {
+  width: 100%;
+  padding: 0 10px 10px 10px;
+  border: none;
+  background-color: #121215;
+}
+
+.calendar div {
+  color: white;
+}
+
+.calendar button {
+  color: white;
+  font-size: 0.8em;
+}
+
+.calendar button:hover, .calendar button:active {
+  background: #f1be5b !important;
+  color: black;
+}
+
+.calendar button:enabled:focus {
+  background: #121215;
+}
+
+.calendar button:disabled {
+  background: #282929 !important;
+  cursor: not-allowed;
+  color: white;
+}
+

@@ -1,0 +1,4 @@
+export const DATE_SELECTED = 'DATE_SELECTED';
+export const WHERE_SELECTED = 'WHERE_SELECTED';
+export const GIGS_POPULATED = 'GIGS_POPULATED';
+export const SPOTIFY_TOKEN = 'SPOTIFY_TOKEN';
