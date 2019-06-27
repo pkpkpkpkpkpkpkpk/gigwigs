@@ -5,8 +5,7 @@ import reducer from './reducer';
 
 const persistConfig = {
   key: 'root',
-  storage: storage,
-  whitelist: ['selectedDate', 'where', 'gigs', 'spotifyToken']
+  storage: storage
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer);

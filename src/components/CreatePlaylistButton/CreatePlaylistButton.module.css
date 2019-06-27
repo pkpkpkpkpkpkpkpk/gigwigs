@@ -1,6 +1,6 @@
 .container {
   width: 100%;
-  height: 40px;
+  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,4 +21,10 @@
 
 .enabled:hover {
   background-color: #dfae4d;
+}
+
+@media (min-width: 550px) {
+  .container {
+    height: 40px;
+  }
 }

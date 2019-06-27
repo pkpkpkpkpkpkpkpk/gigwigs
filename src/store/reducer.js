@@ -1,28 +1,28 @@
 import * as actionTypes from './actions';
 
 const initialState = {
-  selectedDate: new Date(),
-  where: 'sydney'
+  when: new Date(),
+  gigs: []
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.DATE_SELECTED:
+    case actionTypes.SET_WHEN:
       return {
         ...state,
-        selectedDate: action.payload
+        when: action.payload
       }
-    case actionTypes.WHERE_SELECTED:
+    case actionTypes.SET_WHERE:
       return {
         ...state,
         where: action.payload
       }
-    case actionTypes.GIGS_POPULATED:
+    case actionTypes.SET_GIGS:
       return {
         ...state,
         gigs: action.payload
       }
-    case actionTypes.SPOTIFY_TOKEN:
+    case actionTypes.SET_SPOTIFY_TOKEN:
       return {
         ...state,
         spotifyToken: action.payload

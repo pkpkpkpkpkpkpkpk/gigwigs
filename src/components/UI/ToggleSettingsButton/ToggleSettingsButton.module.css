@@ -1,0 +1,28 @@
+.container {
+  height: 50px;
+  width: 50px;
+  padding: 12.5px;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+.container:hover {
+  background-color: #eee;
+}
+
+.container div {
+  height: 100%;
+  width: 100%;
+  background-size: contain;
+}
+
+@media (min-width: 550px) {
+  .container {
+    height: 40px;
+    width: 40px;
+    padding: 7.5px;
+  }
+}

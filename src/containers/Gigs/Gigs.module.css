@@ -2,16 +2,17 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  min-height: calc(100vh - 80px);
+  align-content: flex-start;
+  min-height: calc(100vh - 100px);
 }
 
 .spinnerContainer {
-  height: calc(100vh - 80px);
+  height: calc(100vh - 100px);
   display: flex;
 }
 
 .errorContainer {
-  height: calc(100vh - 80px);
+  height: calc(100vh - 100px);
   display: flex;
   justify-content: center;
   text-align: center;
@@ -19,4 +20,14 @@
 
 .errorContainer div {
   margin: auto 10px;
+}
+
+@media (min-width: 550px) {
+  .container {
+    min-height: calc(100vh - 80px);
+  }
+
+  .spinnerContainer, .errorContainer {
+    height: calc(100vh - 80px);
+  }
 }

@@ -1,0 +1,45 @@
+.container {
+  height: 100vh;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: all 0.3s linear;
+}
+
+.container h3 {
+  margin: 0;
+  padding: 20px 20vw;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.selected, .container h3:hover {
+  color: white;
+}
+
+.exit {
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.exit div:hover {
+  transform: scale(1.2);
+}
+
+.exit div {
+  height: 100%;
+  width: 100%;
+  background-size: contain;
+}
+
+.fade {
+  opacity: 1;
+}

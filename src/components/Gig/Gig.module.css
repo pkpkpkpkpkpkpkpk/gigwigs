@@ -15,6 +15,7 @@
   box-sizing: border-box;
   background-size: cover;
   cursor: pointer;
+  z-index: 1;
 }
 
 .container:hover {
@@ -26,7 +27,12 @@
   transform: scale(1);
 }
 
-.container h3, .container h4 {
+.container h3 {
+  color: white;
+  margin: 5px;
+}
+
+.container h4 {
   margin: 5px;
 }
 

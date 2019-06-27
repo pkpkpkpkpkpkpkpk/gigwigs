@@ -17,7 +17,7 @@ class PlaylistCreator extends Component {
 
   componentDidMount() {
     const spotifyApi = new spotifyWebApi({
-      redirectUri: 'https://pkpkpkpkpkpkpkpk.github.io/gigwigs/playlist',
+      redirectUri: 'https://www.gigwigs.org/playlist',
       clientId: 'e395299ea7a84cf2b3833d140e0fb40f'
     });
 
@@ -54,59 +54,63 @@ class PlaylistCreator extends Component {
 
     const spotifyUserAuthCode = this.props.location.search.slice(6);
 
-    axios.post('https://gigwigs-server.herokuapp.com/spotifyUserAuth', { 
+    axios.post('/spotifyUserAuth', { 
       authCode: spotifyUserAuthCode 
     })
       .then(res => {
-        this.setState({
-          spotifyUserToken: res.data.userToken
-        })
-        
-        const spotifyApiAuthenticated = new spotifyWebApi({
-          accessToken: this.state.spotifyUserToken
-        });
-
-        // returns spotify user id
-        spotifyApiAuthenticated.getMe()
-          .then(
-            data => {
-              this.setState({
-                spotifyUserId: data.body.id
-              });
-
-              spotifyApiAuthenticated.createPlaylist(
-                this.state.spotifyUserId, 
-                // playlist title
-                `Gigs - ${new Date(this.props.selectedDate).toLocaleDateString('en-US', { day: '2-digit' })} ${new Date(this.props.selectedDate).toLocaleDateString('en-US', { month: 'short' })} - ${this.props.where.charAt(0).toUpperCase()}${this.props.where.slice(1)}`, 
-                // playlist description
-                { 'description' : 'Playlist by GigWigs' }
-              )
-                .then(
-                  data => {
-                    const playlistId = data.body.id;
+        if (!res.data.error) {
+          this.setState({
+            spotifyUserToken: res.data.userToken
+          })
           
-                    spotifyApiAuthenticated.addTracksToPlaylist(playlistId, playlistTracks)
-                      .then(
-                        data => {
-                          this.setState({
-                            message: 'Playlist created! Check Spotify...'
-                          });
-                          
-                          setTimeout( () => (
-                            this.props.history.replace('/')
-                          ), 3000);
-                        }, 
-                        error => (
-                          this.errorHandler(error)
-                        ));
-                  }, 
-                  error => (
-                    this.errorHandler(error)
-                  ));
-            }, 
-            error => (
-              this.errorHandler(error)
-            ));
+          const spotifyApiAuthenticated = new spotifyWebApi({
+            accessToken: this.state.spotifyUserToken
+          });
+
+          // returns spotify user id
+          spotifyApiAuthenticated.getMe()
+            .then(
+              data => {
+                this.setState({
+                  spotifyUserId: data.body.id
+                });
+
+                spotifyApiAuthenticated.createPlaylist(
+                  this.state.spotifyUserId, 
+                  // playlist title
+                  `Gigs - ${new Date(this.props.when).toLocaleDateString('en-US', { day: '2-digit' })} ${new Date(this.props.when).toLocaleDateString('en-US', { month: 'short' })} - ${this.props.where.charAt(0).toUpperCase()}${this.props.where.slice(1)}`, 
+                  // playlist description
+                  { 'description' : 'Playlist by GigWigs' }
+                )
+                  .then(
+                    data => {
+                      const playlistId = data.body.id;
+            
+                      spotifyApiAuthenticated.addTracksToPlaylist(playlistId, playlistTracks)
+                        .then(
+                          data => {
+                            this.setState({
+                              message: 'Playlist created! Check Spotify...'
+                            });
+                            
+                            setTimeout( () => (
+                              this.props.history.replace('/')
+                            ), 3000);
+                          }, 
+                          error => (
+                            this.errorHandler(error)
+                          ));
+                    }, 
+                    error => (
+                      this.errorHandler(error)
+                    ));
+              }, 
+              error => (
+                this.errorHandler(error)
+              ));
+        } else {
+          this.errorHandler(res.data.error);
+        }
       })
       .catch(error => (
         this.errorHandler(error)
@@ -145,7 +149,7 @@ const mapStateToProps = state => {
   return {
     gigs: state.gigs,
     spotifyToken: state.spotifyToken,
-    selectedDate: state.selectedDate,
+    when: state.when,
     where: state.where
   };
 }

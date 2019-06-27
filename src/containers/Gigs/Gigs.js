@@ -11,8 +11,6 @@ import styles from './Gigs.module.css';
 
 class Gigs extends Component {
   state = {
-    gigs: [],
-    spotifyToken: null,
     errorMessage: null
   }
 
@@ -22,29 +20,36 @@ class Gigs extends Component {
 
   componentDidUpdate(prevProps) {
     // get gigs if date changes
-    if (this.props.selectedDate !== prevProps.selectedDate) {
-      // clear gigs first so spinner will show
-      this.setState({ 
-        gigs: [] 
-      });
-
+    if (this.props.when !== prevProps.when) {
       this.getGigs();
     }
   }
 
   getGigs = () => {
-    axios.post('https://gigwigs-server.herokuapp.com/getGigs', {
+    // clear gigs first so spinner will show
+    this.props.setGigs( [] );
+
+    axios.post('/getGigs', {
       where: this.props.where,
-      selectedDate: `${new Date(this.props.selectedDate).getFullYear()}-${new Date(this.props.selectedDate).toLocaleDateString('en-US', { month: 'short' })}-${new Date(this.props.selectedDate).toLocaleDateString('en-US', { day: '2-digit' })}`
+      when: new Date(this.props.when).toUTCString(),
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
     })
       .then(res => {
-        const gigs = res.data.gigs;
+        if (!res.data.error) {
+          const gigs = res.data.gigs;
+          // if no gigs on selected date/location, display a message
+          if (gigs.length > 0) {
+            this.props.setGigs(gigs);
 
-        this.setState({
-          gigs: gigs
-        });
-
-        this.getSpotifyOAuthToken();
+            this.getSpotifyOAuthToken();
+          } else {
+            this.setState({
+              errorMessage: 'Nothing on...'
+            });
+          }
+        } else {
+          this.errorhandler(res.data.error);
+        }
       })
       .catch(error => (
         this.errorhandler(error)
@@ -52,15 +57,16 @@ class Gigs extends Component {
   }
 
   getSpotifyOAuthToken = () => {
-    axios.get('https://gigwigs-server.herokuapp.com/spotifyAuth')
+    axios.get('/spotifyAuth')
       .then(res => {
-        this.setState({
-          spotifyToken: res.data.token
-        })
+        if (!res.data.error) {
+          const spotifyToken = res.data.token;
+          this.props.setSpotifyToken(spotifyToken);
 
-        this.getImages();
-
-        this.props.onGetSpotifyToken(this.state.spotifyToken);
+          this.getImages();
+        } else {
+          this.errorhandler(res.data.error);
+        }
       })
       .catch(error => (
         this.errorhandler(error)
@@ -70,53 +76,55 @@ class Gigs extends Component {
   getImages = () => {
     let updatedGigs = [];
 
-    this.state.gigs.forEach(gig => {
-      axios.get('https://api.spotify.com/v1/search?type=artist', {
-        params: {
-          q: gig.title
-        },
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + this.state.spotifyToken
-        }
-      })
-        .then(res => {
-          const image = res.data.artists.items[0].images[1].url;
-          const spotifyArtistId = res.data.artists.items[0].id;
-
-          const updatedGig = {
-            ...gig,
-            image: image,
-            spotifyArtistId: spotifyArtistId
+    this.props.gigs.forEach(gig => {
+      // axios instance created in order to use a different base URL than the default set in app.js
+      axios.create({ baseURL: '/', timeout: 10000 })
+        .get('https://api.spotify.com/v1/search?type=artist', {
+          params: {
+            q: gig.title
+          },
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.props.spotifyToken
           }
-
-          updatedGigs.push(updatedGig);
-
-          updateState();
         })
-        .catch( () => {
-          // if artist isn't found on Spotify
-          updatedGigs.push(gig);
-          
-          updateState();
-        });
+          .then(res => {
+            if (!res.data.error) {
+              const image = res.data.artists.items[0].images[1].url;
+              const spotifyArtistId = res.data.artists.items[0].id;
+
+              const updatedGig = {
+                ...gig,
+                image: image,
+                spotifyArtistId: spotifyArtistId
+              }
+
+              updatedGigs.push(updatedGig);
+
+              updateState();
+            } else {
+              this.errorhandler(res.data.error);
+            }
+          })
+          .catch( () => {
+            // if artist isn't found on Spotify
+            updatedGigs.push(gig);
+            
+            updateState();
+          });
     });
 
     const updateState = () => {
-      if (updatedGigs.length === this.state.gigs.length) {
-        this.setState({
-          gigs: updatedGigs
-        });
-
-        this.props.onGigsPopulated(this.state.gigs);
+      if (updatedGigs.length === this.props.gigs.length) {
+        this.props.setGigs(updatedGigs);
       }
     }
   }
 
   toggleSelectGigHandler = id => {
     let updatedGigs = [
-      ...this.state.gigs
+      ...this.props.gigs
     ]
 
     updatedGigs.forEach( (gig, index) => {
@@ -125,33 +133,25 @@ class Gigs extends Component {
       );
     });
 
-    this.setState({
-      gigs: updatedGigs
-    })
-
-    this.props.onGigsPopulated(this.state.gigs);
+    this.props.setGigs(updatedGigs);
   }
 
   errorhandler = error => {
     this.setState({
-      errorMessage: `Something went wrong, the app will refresh shortly... (${error})`
+      errorMessage: `Something went wrong, try turning it off and on again... (${error})`
     });
-
-    // setTimeout( () => (
-    //   this.props.history.go()
-    // ), 3000);
   }
 
   render() {
     let gigs = null;
-    if (this.state.gigs.length === 0) {
+    if (this.props.gigs.length === 0) {
       gigs = (
         <div className={styles.spinnerContainer}>
           <Spinner />
         </div>
       );
     } else {
-      gigs = this.state.gigs.map(gig => ( 
+      gigs = this.props.gigs.map(gig => ( 
         <Gig 
           key = {gig.id}
           id = {gig.id}
@@ -184,15 +184,17 @@ class Gigs extends Component {
 
 const mapStateToProps = state => {
   return {
-    selectedDate: state.selectedDate,
-    where: state.where
+    when: state.when,
+    where: state.where,
+    spotifyToken: state.spotifyToken,
+    gigs: state.gigs
   };
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onGigsPopulated: gigs => dispatch({ type: actionTypes.GIGS_POPULATED, payload: gigs }),
-    onGetSpotifyToken: spotifyToken => dispatch({ type: actionTypes.SPOTIFY_TOKEN, payload: spotifyToken })
+    setGigs: gigs => dispatch({ type: actionTypes.SET_GIGS, payload: gigs }),
+    setSpotifyToken: spotifyToken => dispatch({ type: actionTypes.SET_SPOTIFY_TOKEN, payload: spotifyToken })
   };
 }
 

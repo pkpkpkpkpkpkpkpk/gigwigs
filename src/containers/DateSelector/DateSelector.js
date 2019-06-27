@@ -9,21 +9,19 @@ import './calendar.css';
 
 class DateSelector extends Component {
   state = {
-    selectedDate: new Date(),
     showCalendar: false
   }
 
-  changeDateHandler = selectedDate => {
+  changeDateHandler = date => {
     this.setState({ 
-      selectedDate,
       showCalendar: false
     });
 
-    this.props.onDateSelected(this.state.selectedDate);
+    this.props.setWhen(date);
   }
 
   render() {
-    let displayDate = `${this.state.selectedDate.toLocaleDateString('en-US', { weekday: 'short' })} ${this.state.selectedDate.toLocaleDateString('en-US', { day: '2-digit' })} ${this.state.selectedDate.toLocaleDateString('en-US', { month: 'short' })}`;
+    let displayDate = `${new Date(this.props.when).toLocaleDateString('en-US', { weekday: 'short' })} ${new Date(this.props.when).toLocaleDateString('en-US', { day: '2-digit' })} ${new Date(this.props.when).toLocaleDateString('en-US', { month: 'short' })}`;
 
     const today = `${new Date().toLocaleDateString('en-US', { weekday: 'short' })} ${new Date().toLocaleDateString('en-US', { day: '2-digit' })} ${new Date().toLocaleDateString('en-US', { month: 'short' })}`;
     const tomorrow = `${new Date().toLocaleDateString('en-US', { weekday: 'short' })} ${new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleDateString('en-US', { day: '2-digit' })} ${new Date().toLocaleDateString('en-US', { month: 'short' })}`;
@@ -52,7 +50,7 @@ class DateSelector extends Component {
         <div className={calendarContainerStyles.join(' ')}>
           <Calendar 
             onChange={this.changeDateHandler} 
-            value={this.state.selectedDate}
+            value={new Date(this.props.when)}
             className={styles.calendar}
             minDetail='year'
             minDate={new Date(new Date().setMonth(new Date().getMonth() - 3))}
@@ -63,12 +61,18 @@ class DateSelector extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    when: state.when
+  };
+}
+
 const mapDispatchToProps = dispatch => {
   return {
-    onDateSelected: selectedDate => dispatch({ type: actionTypes.DATE_SELECTED, payload: selectedDate })
+    setWhen: when => dispatch({ type: actionTypes.SET_WHEN, payload: when })
   };
 }
 
 // DateSelector.propTypes = {};
 
-export default connect(null, mapDispatchToProps)(DateSelector);
+export default connect(mapStateToProps, mapDispatchToProps)(DateSelector);
