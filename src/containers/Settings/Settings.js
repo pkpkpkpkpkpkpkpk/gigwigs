@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions';
 
+import LogoBright from '../../components/UI/LogoBright/LogoBright';
 import crossIcon from '../../assets/images/white-cross.png';
 import styles from './Settings.module.css';
 
@@ -70,8 +71,9 @@ class Settings extends Component {
   
     return (
       <div className={this.state.containerStyles.join(' ')}>
-        {exit}
+        <LogoBright />
         {locationButtons}
+        {exit}
       </div>
     );
   }
