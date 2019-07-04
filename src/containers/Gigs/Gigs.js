@@ -22,6 +22,11 @@ class Gigs extends Component {
     // get gigs if date changes
     if (this.props.when !== prevProps.when) {
       this.getGigs();
+
+      // clear any messages if there are any
+      this.setState({
+        errorMessage: null
+      });
     }
   }
 
@@ -44,7 +49,7 @@ class Gigs extends Component {
             this.getSpotifyOAuthToken();
           } else {
             this.setState({
-              errorMessage: 'Nothing on...'
+              errorMessage: `Nothing's on...`
             });
           }
         } else {

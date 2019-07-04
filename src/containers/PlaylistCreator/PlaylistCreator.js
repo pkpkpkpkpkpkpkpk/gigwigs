@@ -41,10 +41,15 @@ class PlaylistCreator extends Component {
       spotifyApi.getArtistTopTracks(artistId, 'AU')
         .then(
           data => {
-            // artist's last top track
-            playlistTracks.push(data.body.tracks[data.body.tracks.length - 1].uri);
-            // artist's 2nd top track
-            playlistTracks.push(data.body.tracks[1].uri);
+            if (data.body.tracks.length > 1) {
+              // artist's last top track
+              playlistTracks.push(data.body.tracks[data.body.tracks.length - 1].uri);
+              // artist's 2nd top track
+              playlistTracks.push(data.body.tracks[1].uri);
+            // else if artist only has 1 track
+            } else {
+              playlistTracks.push(data.body.tracks[0].uri);
+            }
           }, 
           error => (
             this.errorHandler(error)
