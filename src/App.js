@@ -8,7 +8,7 @@ import Settings from './containers/Settings/Settings';
 import PlaylistCreator from './containers/PlaylistCreator/PlaylistCreator';
 
 axios.defaults.baseURL = 'https://gigwigs-server.appspot.com';
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 5000;
 
 const App = props => {
   // on first visit, user needs to select a location, which will be saved using redux persist

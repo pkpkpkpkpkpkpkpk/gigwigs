@@ -30,60 +30,72 @@ class Gigs extends Component {
     }
   }
 
-  getGigs = () => {
+  getGigs = async () => {
     // clear gigs first so spinner will show
     this.props.setGigs( [] );
 
-    axios.post('/getGigs', {
+    let res = await axios.post('/getGigs', {
       where: this.props.where,
       when: new Date(this.props.when).toUTCString(),
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
     })
-      .then(res => {
-        if (!res.data.error) {
-          const gigs = res.data.gigs;
-          // if no gigs on selected date/location, display a message
-          if (gigs.length > 0) {
-            this.props.setGigs(gigs);
 
-            this.getSpotifyOAuthToken();
-          } else {
-            this.setState({
-              errorMessage: `Nothing's on...`
-            });
-          }
-        } else {
-          this.errorhandler(res.data.error);
-        }
-      })
-      .catch(error => (
-        this.errorhandler(error)
-      ));
+    // return if post request error
+    if (res.status !== 200) {
+      this.errorhandler(res.statusText);
+      return;
+    }
+
+    // return if post request data error
+    if (res.data.error) {
+      this.errorhandler(res.data.error);
+      return;
+    }
+
+    const gigs = res.data.gigs;
+
+    // if no gigs on selected date/location, display a message and return
+    if (gigs.length <= 0) {
+      this.setState({
+        errorMessage: `Nothing's on...`
+      });
+      return;
+    }
+
+    // if gigs found
+    this.props.setGigs(gigs);
+    this.getSpotifyOAuthToken();
   }
 
-  getSpotifyOAuthToken = () => {
-    axios.get('/spotifyAuth')
-      .then(res => {
-        if (!res.data.error) {
-          const spotifyToken = res.data.token;
-          this.props.setSpotifyToken(spotifyToken);
+  getSpotifyOAuthToken = async () => {
+    let res = await axios.get('/spotifyAuth');
 
-          this.getImages();
-        } else {
-          this.errorhandler(res.data.error);
-        }
-      })
-      .catch(error => (
-        this.errorhandler(error)
-      ));
+    // return if post request error
+    if (res.status !== 200) {
+      this.errorhandler(res.statusText);
+      return;
+    }
+
+    // return if post request data error
+    if (res.data.error) {
+      this.errorhandler(res.data.error);
+      return;
+    }
+    
+    const spotifyToken = res.data.token;
+    this.props.setSpotifyToken(spotifyToken);
+    this.getImages();
   }
 
   getImages = () => {
     let updatedGigs = [];
 
-    this.props.gigs.forEach(gig => {
-      // axios instance created in order to use a different base URL than the default set in app.js
-      axios.create({ baseURL: '/', timeout: 10000 })
+    // axios instance created in order to use a different base URL 
+    // than the default set in app.js
+    let axiosInstance = axios.create({ baseURL: '/', timeout: 5000 });
+    
+    this.props.gigs.forEach(async gig => {
+      let res = await axiosInstance
         .get('https://api.spotify.com/v1/search?type=artist', {
           params: {
             q: gig.title
@@ -91,33 +103,27 @@ class Gigs extends Component {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.props.spotifyToken
+            'Authorization': `Bearer ${this.props.spotifyToken}`
           }
-        })
-          .then(res => {
-            if (!res.data.error) {
-              const image = res.data.artists.items[0].images[1].url;
-              const spotifyArtistId = res.data.artists.items[0].id;
+        });
 
-              const updatedGig = {
-                ...gig,
-                image: image,
-                spotifyArtistId: spotifyArtistId
-              }
+      // if artist isn't found on Spotify or error
+      if (res.data.artists.items.length <= 0 || res.status !== 200 || res.data.error) {
+        updatedGigs.push(gig);
+        updateState();
+        return;
+      }
 
-              updatedGigs.push(updatedGig);
+      const image = res.data.artists.items[0].images[1].url;
+      const spotifyArtistId = res.data.artists.items[0].id;
+      const updatedGig = {
+        ...gig,
+        image: image,
+        spotifyArtistId: spotifyArtistId
+      }
 
-              updateState();
-            } else {
-              this.errorhandler(res.data.error);
-            }
-          })
-          .catch( () => {
-            // if artist isn't found on Spotify
-            updatedGigs.push(gig);
-            
-            updateState();
-          });
+      updatedGigs.push(updatedGig);
+      updateState();
     });
 
     const updateState = () => {
